@@ -25,7 +25,7 @@ jobs:
       - name: Download SDK
         run: |
           mkdir -p $HOME/theos/sdks
-          curl -L https://github.com/theos/sdks/releases/latest/download/iPhoneOS14.5.sdk.tar.xz -o $HOME/sdk.tar.xz
+          curl -L https://github.com/theos/sdks/releases/latest/download/iPhoneOS16.0.sdk.tar.xz -o $HOME/sdk.tar.xz
           tar -xf $HOME/sdk.tar.xz -C $HOME/theos/sdks/
 
       - name: Build
@@ -34,20 +34,5 @@ jobs:
       - name: Upload .deb
         uses: actions/upload-artifact@v4
         with:
-          name: aimbot-deb
+          name: 3dappversionspoofer-deb
           path: packages/*.deb
-
-      - name: Find and upload .dylib
-        run: |
-          # Ищем .dylib в разных возможных местах
-          find . -name "*.dylib" -type f
-          mkdir -p dylib-output
-          cp $(find . -name "aimbot.dylib" -type f | head -1) dylib-output/ || true
-        continue-on-error: true
-
-      - name: Upload .dylib (if found)
-        uses: actions/upload-artifact@v4
-        with:
-          name: aimbot-dylib
-          path: dylib-output/*.dylib
-        continue-on-error: true
