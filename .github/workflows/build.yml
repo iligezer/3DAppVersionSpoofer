@@ -7,20 +7,23 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Theos and build
-        uses: Randomblock1/theos-action@v1
-        with:
-          theos-dir: './theos'
-
-      - name: Build package
+      - name: Setup Theos
         run: |
-          export THEOS=./theos
+          sudo apt-get update
+          sudo apt-get install -y git make perl dpkg
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+          echo "$HOME/theos/bin" >> $GITHUB_PATH
+
+      - name: Build tweak
+        run: |
+          cd $GITHUB_WORKSPACE
           make package FINALPACKAGE=1
 
       - name: Upload .deb
